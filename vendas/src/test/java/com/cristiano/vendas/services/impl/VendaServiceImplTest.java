@@ -86,6 +86,8 @@ public class VendaServiceImplTest {
 		BDDMockito.when(vendaMapperMock.toModel(vendaVo)).thenReturn(vendaInvalida);
 		BDDMockito.when(vendaRepositoryMock.save(vendaInvalida)).thenThrow(BadRequestException.class);
 
+		Mockito.verifyNoMoreInteractions(vendaRepositoryMock);
+
 		Assertions.assertThatThrownBy(() -> this.vendaServiceImpl.salvarVenda(vendaVo))
 				.isInstanceOf(BadRequestException.class);
 	}

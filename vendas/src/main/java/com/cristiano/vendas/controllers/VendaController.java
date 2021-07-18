@@ -3,6 +3,8 @@ package com.cristiano.vendas.controllers;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.validation.Valid;
+
 import com.cristiano.vendas.services.VendaService;
 import com.cristiano.vendas.services.dto.VendaDTO;
 import com.cristiano.vendas.services.vo.VendaVO;
@@ -23,7 +25,7 @@ public class VendaController {
     private final VendaService vendaService;
 
     @PostMapping(value = "/salvar", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<VendaDTO> salvarVenda(@RequestBody VendaVO venda) throws Exception {
+    public ResponseEntity<VendaDTO> salvarVenda(@RequestBody @Valid VendaVO venda) throws Exception {
         return ResponseEntity.created(new URI("/salvar")).body(vendaService.salvarVenda(venda));
     }
 }

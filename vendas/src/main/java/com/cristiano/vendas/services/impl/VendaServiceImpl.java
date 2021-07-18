@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
+import com.cristiano.vendas.exceptions.BadRequestException;
 import com.cristiano.vendas.models.Venda;
 import com.cristiano.vendas.repositorys.VendaRepository;
 import com.cristiano.vendas.services.VendaService;
@@ -38,7 +39,7 @@ public class VendaServiceImpl implements VendaService {
         try {
             vendaSalva = this.vendaRepository.save(vendaASerSalva);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new BadRequestException(e.getMessage());
         }
 
         this.enviarMsgEmail(EmailSendDTO.builder().setEmailDestino("dj7cristiano@gmail.com")

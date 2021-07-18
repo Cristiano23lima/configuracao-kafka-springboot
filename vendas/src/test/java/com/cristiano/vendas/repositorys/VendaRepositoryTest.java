@@ -1,12 +1,10 @@
 package com.cristiano.vendas.repositorys;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.cristiano.vendas.models.Venda;
+import com.cristiano.vendas.util.VendaCreator;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +23,7 @@ class VendaRepositoryTest {
     @Test
     @DisplayName("Salvar venda quando for sucesso")
     public void save_persistirVenda_quandoSucesso() {
-        Venda vendaParaSalvar = createVenda();
+        Venda vendaParaSalvar = VendaCreator.createVendaAntesSalvar();
 
         Venda vendaSalva = this.vendaRepository.save(vendaParaSalvar);
         Assertions.assertThat(vendaSalva).isNotNull();
@@ -40,8 +38,8 @@ class VendaRepositoryTest {
 
     @Test
     @DisplayName("Retorna exceção, ao tentar persistir uma venda que não tem nome do produto")
-    public void save_retornarErroAoPersistirVendaSemNomeProduto_quandoError() {
-        Venda vendaParaSalvar = createVenda();
+    public void save_throwDataIntegrityViolationException_quandoVendaSemNomeProduto() {
+        Venda vendaParaSalvar = VendaCreator.createVendaAntesSalvar();
         vendaParaSalvar.setNomeProduto(null);
 
         Assertions.assertThatThrownBy(() -> this.vendaRepository.save(vendaParaSalvar))
@@ -50,8 +48,8 @@ class VendaRepositoryTest {
 
     @Test
     @DisplayName("Retorna exceção, ao tentar persistir venda que não tem o preço do produto")
-    public void save_retornarErroAoPersistirVendaSemValorProduto_quandoError() {
-        Venda vendaParaSalvar = createVenda();
+    public void save_throwDataIntegrityViolationException_quandoVendaSemValorProduto() {
+        Venda vendaParaSalvar = VendaCreator.createVendaAntesSalvar();
         vendaParaSalvar.setPrecoProduto(null);
 
         Assertions.assertThatThrownBy(() -> this.vendaRepository.save(vendaParaSalvar))
@@ -60,17 +58,12 @@ class VendaRepositoryTest {
 
     @Test
     @DisplayName("Retorna exceção, ao tentar persistir venda que não possui a quantidade de produtos")
-    public void save_retornarErroAoPersistirVendaSemQuantidadeProduto_quandoError() {
-        Venda vendaParaSalvar = createVenda();
+    public void save_throwDataIntegrityViolationException_quandoSemQuantidadeProduto() {
+        Venda vendaParaSalvar = VendaCreator.createVendaAntesSalvar();
         vendaParaSalvar.setQuantidadeProduto(null);
 
         Assertions.assertThatThrownBy(() -> this.vendaRepository.save(vendaParaSalvar))
                 .isInstanceOf(DataIntegrityViolationException.class);
-    }
-
-    private Venda createVenda() {
-        return Venda.builder().setNomeCliente("Cristiano Rodrigues").setNomeProduto("Recheado").setPrecoProduto(9.0)
-                .setQuantidadeProduto(20).build();
     }
 
 }

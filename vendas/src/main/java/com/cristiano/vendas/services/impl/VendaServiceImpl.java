@@ -3,6 +3,8 @@ package com.cristiano.vendas.services.impl;
 import java.rmi.ServerError;
 import java.util.UUID;
 
+import javax.validation.Valid;
+
 import com.cristiano.vendas.models.Venda;
 import com.cristiano.vendas.repositorys.VendaRepository;
 import com.cristiano.vendas.services.VendaService;
@@ -31,7 +33,13 @@ public class VendaServiceImpl implements VendaService {
     public VendaDTO salvarVenda(VendaVO venda) throws Exception {
         Venda vendaASerSalva = this.vendaMapper.toModel(venda);
 
-        Venda vendaSalva = this.vendaRepository.save(vendaASerSalva);
+        Venda vendaSalva = new Venda();
+
+        try {
+            vendaSalva = this.vendaRepository.save(vendaASerSalva);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
 
         this.enviarMsgEmail(EmailSendDTO.builder().setEmailDestino("dj7cristiano@gmail.com")
                 .setMensagem("Venda cadastrada com sucesso").setNomeDestino("CRISTIANO RODRIGUES DE LIMA").build());

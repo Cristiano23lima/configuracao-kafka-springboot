@@ -1,5 +1,9 @@
 package com.cristiano.vendas.services.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.isNotNull;
+import static org.mockito.ArgumentMatchers.isNull;
+
 import com.cristiano.vendas.exceptions.BadRequestException;
 import com.cristiano.vendas.models.Venda;
 import com.cristiano.vendas.repositorys.VendaRepository;
@@ -15,10 +19,13 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -39,6 +46,9 @@ public class VendaServiceImplTest {
 	@Mock
 	private KafkaTemplate<String, String> kafkaTemplateMock;
 
+	@Captor
+	ArgumentCaptor<Venda> vendaCaptor;
+
 	@Test
 	@DisplayName("Retornar um dto do dado persistido no banco, quando der tudo certo")
 	public void salvarVenda_retornaDtoVenda_quandoSucesso() throws Exception {
@@ -54,8 +64,17 @@ public class VendaServiceImplTest {
 
 		VendaDTO venda = this.vendaServiceImpl.salvarVenda(vo);
 
+		Mockito.verify(vendaRepositoryMock).save(vendaCaptor.capture());
+		Venda vendaCaptorValue = vendaCaptor.getValue();
+
+		assertEquals(vo.getNomeCliente(), vendaCaptorValue.getNomeCliente());
+		assertEquals(vo.getNomeProduto(), vendaCaptorValue.getNomeProduto());
+		assertEquals(vo.getPrecoProduto(), vendaCaptorValue.getPrecoProduto());
+		assertEquals(vo.getQuantidadeProduto(), vendaCaptorValue.getQuantidadeProduto());
+
 		Assertions.assertThat(venda).isNotNull();
 		Assertions.assertThat(venda).isExactlyInstanceOf(VendaDTO.class);
+
 	}
 
 	@Test

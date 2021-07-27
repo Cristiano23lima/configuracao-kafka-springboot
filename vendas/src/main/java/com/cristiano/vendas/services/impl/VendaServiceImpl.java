@@ -1,9 +1,6 @@
 package com.cristiano.vendas.services.impl;
 
-import java.rmi.ServerError;
 import java.util.UUID;
-
-import javax.validation.Valid;
 
 import com.cristiano.vendas.exceptions.BadRequestException;
 import com.cristiano.vendas.models.Venda;
